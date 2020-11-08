@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "../Engine.h"
 
 Engine::Engine()
 {
@@ -31,34 +31,53 @@ Engine::~Engine()
 	TTF_Quit();
 }
 
+/*
+ * Initializes SDL & SDL subsystems
+ * 
+ * args: none
+ * 
+ * return: void
+ */
 void Engine::init()
 {
 	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
 	{
-		std::cout << "FAIL: Engine has failed to initialize; Error: "
-			<< SDL_GetError() << std::endl;
+		cout << "FAIL: Engine has failed to initialize; Error: "
+			<< SDL_GetError() << endl;
+		assert(false);
 	}
 
 	if( IMG_Init( IMG_INIT_PNG ) < 0 )
 	{
-		std::cout << "FAIL: Engine has failed to initialize; Error: "
-			<< IMG_GetError() << std::endl;
+		cout << "FAIL: Engine has failed to initialize; Error: "
+			<< IMG_GetError() << endl;
+		assert(false);
 	}
 
 	if( Mix_Init( MIX_INIT_MP3 ) < 0 )
 	{
-		std::cout << "FAIL: Engine has failed to initialize; Error: "
-			<< Mix_GetError() << std::endl;
+		cout << "FAIL: Engine has failed to initialize; Error: "
+			<< Mix_GetError() << endl;
+		assert(false);
 	}
 
 	if( TTF_Init() < 0 )
 	{
-		std::cout << "FAIL: Engine has failed to initialize; Error: "
-			<< TTF_GetError() << std::endl;
+		cout << "FAIL: Engine has failed to initialize; Error: "
+			<< TTF_GetError() << endl;
+		assert(false);
 	}
 }
 
-void Engine::create_window( std::string title )
+/*
+ * Creates a window to render graphics
+ * 
+ * args: 
+ *   string containing the title
+ * 
+ * return: void
+ */
+void Engine::create_window( string title )
 {
 	window = SDL_CreateWindow( title.c_str(), SDL_WINDOWPOS_UNDEFINED,
 							   SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
@@ -66,11 +85,20 @@ void Engine::create_window( std::string title )
 
 	if( window == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to create a window; Error: "
-			<< SDL_GetError() << std::endl;
+		cout << "FAIL: Engine has failed to create a window; Error: "
+			<< SDL_GetError() << endl;
+		assert(false);
 	}
 }
 
+/*
+ * Creates a renderer to render graphics
+ * 
+ * args:
+ *   v_sync: bool where true enables v_sync; false by default
+ * 
+ * return: void
+ */
 void Engine::create_renderer( bool v_sync )
 {
 	if( window != NULL )
@@ -86,19 +114,29 @@ void Engine::create_renderer( bool v_sync )
 
 		if( renderer == NULL )
 		{
-			std::cout << "FAIL: Engine has failed to create a renderer; "
-				<< "Error: " << SDL_GetError() << std::endl;
+			cout << "FAIL: Engine has failed to create a renderer; "
+				<< "Error: " << SDL_GetError() << endl;
+			assert(false);
 		}
 	}
 	else
 	{
-		std::cout << "FAIL: Engine has failed to create a renderer; Error: "
-			<< "Window has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to create a renderer; Error: "
+			<< "Window has not been created" << endl;
 	}
 
 }
 
-SDL_Texture* Engine::load_media( std::string path, bool color_keying )
+/*
+ * Loads surface from computer files
+ * 
+ * args:
+ * 	 path: string containing file path
+ *   color_keying: bool where true activates color keying
+ * 
+ * return: SDL_Texture* pointing to the active texture
+ */
+SDL_Texture* Engine::load_media( string path, bool color_keying )
 {
 	SDL_Texture* loaded_texture = NULL;
 	SDL_Surface* loaded_surface = NULL;
@@ -107,8 +145,8 @@ SDL_Texture* Engine::load_media( std::string path, bool color_keying )
 
 	if( loaded_surface == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to load media; Error: "
-			<< IMG_GetError() << std::endl;
+		cout << "FAIL: Engine has failed to load media; Error: "
+			<< IMG_GetError() << endl;
 	}
 	else if( renderer != NULL )
 	{
@@ -118,8 +156,8 @@ SDL_Texture* Engine::load_media( std::string path, bool color_keying )
 								 SDL_MapRGB( loaded_surface->format, color_key.r,
 											 color_key.g, color_key.b ) ) < 0 )
 			{
-				std::cout << "FAIL: Engine has failed to load media; Error: "
-					<< SDL_GetError() << std::endl;
+				cout << "FAIL: Engine has failed to load media; Error: "
+					<< SDL_GetError() << endl;
 			}
 		}
 
@@ -128,8 +166,8 @@ SDL_Texture* Engine::load_media( std::string path, bool color_keying )
 
 		if( loaded_texture == NULL )
 		{
-			std::cout << "FAIL: Engine has failed to load media; Error: "
-				<< SDL_GetError() << std::endl;
+			cout << "FAIL: Engine has failed to load media; Error: "
+				<< SDL_GetError() << endl;
 		}
 
 		SDL_FreeSurface( loaded_surface );
@@ -137,45 +175,73 @@ SDL_Texture* Engine::load_media( std::string path, bool color_keying )
 	}
 	else
 	{
-		std::cout << "FAIL: Engine has failed to load media; Error: "
-			<< "Renderer has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to load media; Error: "
+			<< "Renderer has not been created" << endl;
 	}
 
 	return loaded_texture;
 }
 
+/*
+ * Draws texture to screen
+ * 
+ * args:
+ *   active_texture: SDL_Texture* pointing to texture to be rendered
+ *   dst_loc: SDL_Rect* pointing to a box enclosing the destination location
+ *   src_loc: SDL_Rect* pointing to a box enclosing the source location
+ * 
+ * return: void
+ * 
+ * note: Leave SDL_Rect* = NULL to enclose entire location
+ */
 void Engine::render_texture( SDL_Texture* active_texture, SDL_Rect* dst_loc,
-							 SDL_Rect* src_loc )
+	SDL_Rect* src_loc )
 {
 	if( window == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to render texture; Error: "
-			<< "Window has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to render texture; Error: "
+			<< "Window has not been created" << endl;
 	}
 	else if( renderer == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to render texture; Error: "
-			<< "Renderer has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to render texture; Error: "
+			<< "Renderer has not been created" << endl;
 	}
 	else
 	{
 		if( SDL_RenderCopy( renderer, active_texture, dst_loc, src_loc ) < 0 )
 		{
-			std::cout << "FAIL: Engine has failed to render texture: Error: "
-				<< SDL_GetError() << std::endl;
+			cout << "FAIL: Engine has failed to render texture: Error: "
+				<< SDL_GetError() << endl;
 		}
 	}
 }
 
+/*
+ * Draws box outline to the screen
+ * 
+ * args:
+ * 	 box: SDL_Rect* pointing to the rectangle to render
+ *   color: SDL_Color* pointing to the color to render it with
+ * 
+ * return: void
+ */
 void Engine::draw_box( SDL_Rect* box, SDL_Color* color )
 {
 	SDL_SetRenderDrawColor( renderer, color->r, color->g, color->b, color->a );
 	SDL_RenderDrawRect( renderer, box );
 }
 
-std::vector<SDL_Event> Engine::handle_events()
+/*
+ * Processes all events in the queue
+ * 
+ * args: none
+ *
+ * return: vector<SDL_Event> of SDL_Events that are in the queue
+ */
+vector<SDL_Event> Engine::handle_events()
 {
-	static std::vector<SDL_Event> current_events;
+	static vector<SDL_Event> current_events;
 
 	current_events.clear();
 
@@ -195,6 +261,14 @@ std::vector<SDL_Event> Engine::handle_events()
 	return current_events;
 }
 
+/*
+ * Determines what key has been struck by user
+ *
+ * args:
+ *   SDL_Event* pointing to event to handle
+ *
+ * return: char containing active key
+ */
 char Engine::handle_key_strike( SDL_Event* c_e )
 {
 	char active_key = '\0';
@@ -424,45 +498,61 @@ char Engine::handle_key_strike( SDL_Event* c_e )
 	return active_key;
 }
 
+
+/*
+ * Clears the screen with the erase color
+ * 
+ * args: none
+ * 
+ * return: void
+ */
 void Engine::clear_screen()
 {
 	if( window == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to clear screen; Error: "
-			<< "Window has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to clear screen; Error: "
+			<< "Window has not been created" << endl;
 	}
 	else if( renderer == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to clear screen; Error: "
-			<< "Renderer has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to clear screen; Error: "
+			<< "Renderer has not been created" << endl;
 	}
 	else
 	{
 		if( SDL_SetRenderDrawColor( renderer, color_erase.r, color_erase.g,
 									color_erase.b, color_erase.a ) < 0 )
 		{
-			std::cout << "FAIL: Engine has failed to clear screen; Error: "
-				<< SDL_GetError() << std::endl;
+			cout << "FAIL: Engine has failed to clear screen; Error: "
+				<< SDL_GetError() << endl;
 		}
 		else if( SDL_RenderClear( renderer ) < 0 )
 		{
-			std::cout << "FAIL: Engine has failed to clear screen; Error: "
-				<< SDL_GetError() << std::endl;
+			cout << "FAIL: Engine has failed to clear screen; Error: "
+				<< SDL_GetError() << endl;
 		}
 	}
 }
 
+
+/*
+ * Updates the screen
+ * 
+ * args: none
+ * 
+ * return: void
+ */
 void Engine::update()
 {
 	if( window == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to update; Error: "
-			<< "Window has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to update; Error: "
+			<< "Window has not been created" << endl;
 	}
 	else if( renderer == NULL )
 	{
-		std::cout << "FAIL: Engine has failed to update; Error: "
-			<< "Renderer has not been created" << std::endl;
+		cout << "FAIL: Engine has failed to update; Error: "
+			<< "Renderer has not been created" << endl;
 	}
 	else
 	{
@@ -470,11 +560,26 @@ void Engine::update()
 	}
 }
 
+/*
+ * Sets key color
+ * 
+ * args:
+ *   color: SDL_Color* pointing to color key color
+ * 
+ * return: void
+ */
 void Engine::set_key_color( SDL_Color* color )
 {
 	color_key = *color;
 }
 
+/*
+ * Gets quit
+ * 
+ * args: none
+ * 
+ * return: void
+ */
 bool Engine::get_quit()
 {
 	return quit;

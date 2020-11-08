@@ -1,0 +1,40 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "C/C++: g++.exe build active file",
+			"command": "C:\\Program Files (x86)\\mingw-w64\\i686-8.1.0-posix-dwarf-rt_v6-rev0\\mingw32\\bin\\g++.exe",
+			"args": [
+				"-g",
+				"${file}",
+				"${workspaceFolder}\\src\\*.cpp",
+				"-IC:\\Users\\chris\\dev\\SDL2\\include\\SDL2",
+				"-LC:\\Users\\chris\\dev\\SDL2\\lib",
+				"-lmingw32", "-lSDL2main", "-lSDL2", "-lSDL2_image", "-lSDL2_ttf", "-lSDL2_mixer",
+				"-o",
+				"bin\\${fileBasenameNoExtension}.exe"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "run",
+			"args": ["${fileDirname}\\${fileBasenameNoExtension}.exe"],
+			"command": ".\\bin\\main.exe",
+            "group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		}
+	]
+}
