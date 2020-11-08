@@ -9,8 +9,17 @@
 #include <cmath>
 #include <vector>
 #include <cassert>
+#include <unordered_set>
 #include "src/Vector2D.h"
-#include "src/Shapes.h"
+#include "src/ShapeInterface.h"
+#include "src/ObjectInterface.h"
+
+/*
+ * TO-DO:
+ *   - implement an efficient way to check collisions against every object
+ *   - draw every object to screen on update
+ *   - investigate multi-threading (check collisions on seperate thread)
+ */
 
 const int SCREEN_WIDTH = 500, SCREEN_HEIGHT = 700, ERASE = 255;
 const char UP_ARROW_KEY = 1, RIGHT_ARROW_KEY = 2, DOWN_ARROW_KEY = 3, 
@@ -27,6 +36,7 @@ private:
 	SDL_Color color_key, color_erase;
 	SDL_Event e;
 	bool quit;
+	unordered_set<ObjectInterface*> objects;
 
 public:
 
@@ -43,9 +53,10 @@ public:
 	vector<SDL_Event> handle_events();
 	char handle_key_strike(SDL_Event* c_e);
 	void clear_screen();
-	void update();
+	void update(); // TO-DO
 	void set_key_color( SDL_Color* color );
 	bool get_quit();
-	// bool test_collision( Vector2D* n, Circle* c_hb, SDL_Rect* box_hb );
-    // void resolve_collision( Ball* c );
+	void handle_collisions(); // TO-DO
+	void register_object(ObjectInterface* obj);
+	void deregister_object(ObjectInterface* obj);
 };

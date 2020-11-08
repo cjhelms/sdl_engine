@@ -556,6 +556,7 @@ void Engine::update()
 	}
 	else
 	{
+		// TO-DO: update physics/draw all objects to screen
 		SDL_RenderPresent( renderer );
 	}
 }
@@ -583,4 +584,39 @@ void Engine::set_key_color( SDL_Color* color )
 bool Engine::get_quit()
 {
 	return quit;
+}
+
+/*
+ * Handles any collisions that have occured between any objects
+ * 
+ * args: none
+ * 
+ * return: void
+ */
+void Engine::handle_collisions(){
+	
+}
+
+/*
+ * Register an object with the engine to be managed
+ * 
+ * args:
+ * 	 obj: ObjectInterface* pointing to object to register
+ * 
+ * return: void
+ */
+void Engine::register_object(ObjectInterface* obj){
+	objects.insert(obj);
+}
+
+/*
+ * Deregister an object with the engine to stop being managed
+ * 
+ * args:
+ * 	 obj: ObjectInterface* pointing to object to deregister
+ * 
+ * return: void
+ */
+void Engine::deregister_object(ObjectInterface* obj){
+	objects.erase(obj);
 }

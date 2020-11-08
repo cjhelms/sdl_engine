@@ -147,10 +147,10 @@ double Vector2D::dot_prod( const Vector2D& v ) const
  */
 void Vector2D::reflect( const Vector2D& v )
 {
-    if(v.xv < v.yv && v.xv/v.yv <= VERT_CUTOFF){
+    if(v.is_vertical()){
         this->p.set_point(2*v.p.xp - this->p.xp, this->p.yp);
     }
-    else if(v.yv < v.xv && v.yv/v.xv <= VERT_CUTOFF){
+    else if(v.is_horizontal()){
         this->p.set_point(this->p.xp, 2*v.p.yp - this->p.yp);
     }
     else{
@@ -163,4 +163,12 @@ void Vector2D::reflect( const Vector2D& v )
     }
 	this->set_vector( 2 * this->dot_prod( v ) * v.xv - this->xv,
 					2 * this->dot_prod( v ) * v.yv - this->yv);
+}
+
+bool Vector2D::is_vertical() const{
+    return this->xv < this->yv && this->xv/this->yv <= VERT_CUTOFF;
+}
+
+bool Vector2D::is_horizontal() const{
+    return this->yv < this->xv && this->yv/this->xv <= VERT_CUTOFF;
 }

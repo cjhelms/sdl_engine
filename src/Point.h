@@ -3,6 +3,8 @@
 #include <iostream>
 #include <math.h>
 
+// TO-DO: move point reflection to here
+
 struct Point{
     int xp, yp;
 

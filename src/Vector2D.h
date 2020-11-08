@@ -3,7 +3,9 @@
 #include "Point.h"
 #include <iostream>
 
-const double VERT_CUTOFF = 0.05; // cutoff is ratio of 1/20 for a vertical line
+// TO-DO: vector shouldn't have a point
+
+const double VERT_CUTOFF = 0.05; // |y| >= 20*|x| ==> vertical
 
 struct Vector2D
 {
@@ -26,6 +28,8 @@ struct Vector2D
 	void normalize();
 	double dot_prod( const Vector2D& v ) const;
 	void reflect( const Vector2D& v );
+	bool is_vertical() const;
+	bool is_horizontal() const;
 };
 
 std::ostream &operator<<( std::ostream &output, const Vector2D &v );
