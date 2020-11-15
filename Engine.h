@@ -38,6 +38,8 @@ private:
 	bool quit;
 	unordered_set<ObjectInterface*> objects;
 
+	void resolve_collision(ObjectInterface* obj1, ObjectInterface* obj2);
+
 public:
 
 	Engine();

@@ -1,13 +1,15 @@
 #pragma once
 
+#include <vector>
 #include "Vector2D.h"
 
-class ShapeInterface
+typedef std::vector<Vector2D> Axes;
+
+struct ShapeInterface
 {
-private:
 
-public:
-
-    virtual Vector2D find_intersection(Vector2D ray) = 0; // check if ray intersects hb
+    virtual void update(const Point& p, const Vector2D h) = 0;
+    virtual Axes get_axes() = 0;
+    virtual Vector2D project(Vector2D axis) = 0;
 
 };

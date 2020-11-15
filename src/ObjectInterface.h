@@ -9,9 +9,23 @@ private:
     Vector2D vel, accel, head;
     ShapeInterface* hb;
 
+    Vector2D project_hb(Vector2D axis) const;
+
 public:
 
+    ObjectInterface();
+    ObjectInterface(ShapeInterface* shape);
+    virtual ~ObjectInterface() = 0;
+    void set_hb_shape(ShapeInterface* shape);
+    bool intersect(const ObjectInterface& obj) const;
+    Axes get_hb_axes() const;
+    Vector2D get_vel() const;
+    Vector2D get_accel() const;
+    Vector2D get_head() const;
+    void set_vel(const Vector2D& vel);
+    void set_accel(const Vector2D& accel);
+    void set_head(const Vector2D& head);
+
     virtual void update() = 0;
-    virtual Vector2D is_collided(ObjectInterface * obj) = 0; // check ray against hitbox, return reflection vector
-    virtual void handle_collision(Vector2D ref); // use reflection vector to handle collision
+
 };

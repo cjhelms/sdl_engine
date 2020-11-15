@@ -30,6 +30,7 @@ struct Vector2D
 	void reflect( const Vector2D& v );
 	bool is_vertical() const;
 	bool is_horizontal() const;
+	
 };
 
 std::ostream &operator<<( std::ostream &output, const Vector2D &v );

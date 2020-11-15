@@ -32,6 +32,19 @@ Engine::~Engine()
 }
 
 /*
+ * Resolves collisions using basic vector reflection
+ * 
+ * args:
+ *   obj1: ObjectInterface* pointing to first object
+ *   obj2: ObjectInterface* pointing to second object
+ * 
+ * return: void
+ */
+void Engine::resolve_collision(ObjectInterface* obj1, ObjectInterface* obj2){
+	
+}
+
+/*
  * Initializes SDL & SDL subsystems
  * 
  * args: none
@@ -587,14 +600,39 @@ bool Engine::get_quit()
 }
 
 /*
- * Handles any collisions that have occured between any objects
+ * Handles any collisions using SAT collision detection
  * 
  * args: none
  * 
  * return: void
  */
 void Engine::handle_collisions(){
-	
+	for(auto itr1 = objects.begin(); itr1 != objects.end(); ++itr1) {
+		for(auto itr2 = objects.begin(); itr2 != objects.end(); ++itr2) {
+			if(itr1 != itr2){
+				bool is_collided = false;
+				Axes axes = (*itr1)->get_hb_axes();
+				for(auto itr3 = axes.begin(); itr3 != axes.end(); ++itr3){
+					if((*itr1)->intersect(**itr2)){
+						resolve_collision(*itr1, *itr2);
+						is_collided = true;
+					}
+				}
+				if(!is_collided){
+					axes = (*itr2)->get_hb_axes();
+					for(auto itr3 = axes.begin(); itr3 != axes.end(); ++itr3){
+						Vector2D proj1, proj2;
+						proj1 = (*itr1)->project_hb(*itr3);
+						proj2 = (*itr2)->project_hb(*itr3);
+						if(proj1.intersect(proj2)){
+							resolve_collision(*itr1, *itr2);
+							is_collided = true;
+						}
+					}	
+				}
+			}
+		}
+	}
 }
 
 /*
